@@ -70,6 +70,13 @@ describe("gateway config mutation guard coverage", () => {
     expect(ALLOWED_GATEWAY_CONFIG_PATHS_FOR_TEST).toContain(
       "messages.groupChat.unmentionedInbound",
     );
+    expect(ALLOWED_GATEWAY_CONFIG_PATHS_FOR_TEST).toContain("agents.list[].name");
+    expect(ALLOWED_GATEWAY_CONFIG_PATHS_FOR_TEST).toContain("agents.list[].workspace");
+    expect(ALLOWED_GATEWAY_CONFIG_PATHS_FOR_TEST).toContain("agents.list[].agentDir");
+    expect(ALLOWED_GATEWAY_CONFIG_PATHS_FOR_TEST).toContain("agents.list[].identity.name");
+    expect(ALLOWED_GATEWAY_CONFIG_PATHS_FOR_TEST).toContain("agents.list[].identity.emoji");
+    expect(ALLOWED_GATEWAY_CONFIG_PATHS_FOR_TEST).toContain("agents.list[].identity.theme");
+    expect(ALLOWED_GATEWAY_CONFIG_PATHS_FOR_TEST).toContain("tools.agentToAgent.allow");
   });
 
   it("allows documented subagent thinking default edits via config.patch", () => {
@@ -608,4 +615,46 @@ describe("gateway config mutation guard coverage", () => {
       },
     );
   });
+
+  it("allows agents to self-register name/workspace/agentDir via config.patch", () => {
+    expectAllowed(
+      { agents: { list: [{ id: "ethan" }] } },
+      {
+        agents: {
+          list: [
+            {
+              id: "ethan",
+              name: "Ethan",
+              workspace: "/Users/jarvis/.openclaw/workspace-ethan",
+              agentDir: "/Users/jarvis/.openclaw/agents/ethan",
+            },
+          ],
+        },
+      },
+    );
+  });
+
+  it("allows agents to self-register identity fields via config.patch", () => {
+    expectAllowed(
+      { agents: { list: [{ id: "ethan" }] } },
+      {
+        agents: {
+          list: [
+            {
+              id: "ethan",
+              identity: { name: "Ethan", emoji: "🛠️", theme: "dark" },
+            },
+          ],
+        },
+      },
+    );
+  });
+
+  it("allows additive tools.agentToAgent.allow append via config.patch", () => {
+    expectAllowed(
+      { tools: { agentToAgent: { allow: ["jarvis"] } } },
+      { tools: { agentToAgent: { allow: ["jarvis", "heimdall"] } } },
+    );
+  });
+
 });
