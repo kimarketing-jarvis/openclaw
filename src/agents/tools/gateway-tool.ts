@@ -48,6 +48,12 @@ const ALLOWED_GATEWAY_CONFIG_PATHS = [
   "agents.defaults.reasoningDefault",
   "agents.defaults.fastModeDefault",
   "agents.list[].id",
+  "agents.list[].name",
+  "agents.list[].workspace",
+  "agents.list[].agentDir",
+  "agents.list[].identity.name",
+  "agents.list[].identity.emoji",
+  "agents.list[].identity.theme",
   "agents.list[].model",
   "agents.list[].thinkingDefault",
   "agents.list[].subagents.thinking",
@@ -67,6 +73,10 @@ const ALLOWED_GATEWAY_CONFIG_PATHS = [
   "messages.visibleReplies",
   "messages.groupChat.visibleReplies",
   "messages.groupChat.unmentionedInbound",
+  // Allow-list for additive agent-to-agent routing; operator controls which agents
+  // can be targeted by other agents. Appending to this list is a Fury
+  // self-registration gate (agents cannot grant themselves new targets).
+  "tools.agentToAgent.allow",
 ] as const;
 
 /** @internal Exposed for regression tests only; do not import from runtime code. */
